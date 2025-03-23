@@ -21,6 +21,10 @@ def load_model(model_path='best_model.pkl'):
 # Load the model
 model = load_model()
 
+# Check if the model is loaded
+if model is None:
+    raise Exception("Model could not be loaded. Check the model file and dependencies.")
+
 # Define the input data schema using Pydantic
 class PredictionInput(BaseModel):
     AGE: int
@@ -65,9 +69,6 @@ def predict(input: PredictionInput):
         return {"prediction": prediction}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-        
-if model is None:
-    raise Exception("Model could not be loaded. Check the model file and dependencies.")
 
 # Run the FastAPI app
 if __name__ == "__main__":

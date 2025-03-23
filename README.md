@@ -19,7 +19,7 @@ The **Lung Cancer Predictor** is a machine learning-based application designed t
 - A **FastAPI backend** that serves a machine learning model for predictions.
 - A **Flutter frontend** that allows users to input their health data and view predictions.
 
-📌 **Source**: The dataset is derived from Kaggle. Dataset link: [[Insert Your Dataset Link Here](https://www.kaggle.com/datasets/shantanugarg274/lung-cancer-prediction-dataset)].
+📌 **Source**: The dataset is derived from Kaggle. Dataset link: [[Lung Cancer Predict Dataset](https://www.kaggle.com/datasets/shantanugarg274/lung-cancer-prediction-dataset)].
 
 This project aims to provide an easy-to-use tool for individuals to assess their risk of lung cancer based on key health indicators.
 

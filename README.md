@@ -101,7 +101,7 @@ The FastAPI backend provides a single endpoint for making predictions:
 - **Output**: JSON object with the prediction:
   ```json
   {
-    "prediction": 0
+    "prediction": No Lung Cancer(0)
   }
   ```
 

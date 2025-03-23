@@ -10,162 +10,107 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Prediction App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: InputPage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Health Prediction',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: PredictionScreen(),
     );
   }
 }
 
-class InputPage extends StatefulWidget {
+class PredictionScreen extends StatefulWidget {
   @override
-  _InputPageState createState() => _InputPageState();
+  _PredictionScreenState createState() => _PredictionScreenState();
 }
 
-class _InputPageState extends State<InputPage> {
-  // Controllers for each input field
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController smokingController = TextEditingController();
-  final TextEditingController fingerDiscolorationController = TextEditingController();
-  final TextEditingController mentalStressController = TextEditingController();
-  final TextEditingController pollutionExposureController = TextEditingController();
-  final TextEditingController longTermIllnessController = TextEditingController();
-  final TextEditingController energyLevelController = TextEditingController();
-  final TextEditingController immuneWeaknessController = TextEditingController();
-  final TextEditingController breathingIssueController = TextEditingController();
-  final TextEditingController alcoholConsumptionController = TextEditingController();
-  final TextEditingController throatDiscomfortController = TextEditingController();
-  final TextEditingController oxygenSaturationController = TextEditingController();
-  final TextEditingController chestTightnessController = TextEditingController();
-  final TextEditingController familyHistoryController = TextEditingController();
-  final TextEditingController smokingFamilyHistoryController = TextEditingController();
-  final TextEditingController stressImmuneController = TextEditingController();
+class _PredictionScreenState extends State<PredictionScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, dynamic> _formData = {
+    "AGE": 0,
+    "GENDER": 0,
+    "SMOKING": 0,
+    "FINGER_DISCOLORATION": 0,
+    "MENTAL_STRESS": 0,
+    "EXPOSURE_TO_POLLUTION": 0,
+    "LONG_TERM_ILLNESS": 0,
+    "ENERGY_LEVEL": 0.0,
+    "IMMUNE_WEAKNESS": 0,
+    "BREATHING_ISSUE": 0,
+    "ALCOHOL_CONSUMPTION": 0,
+    "THROAT_DISCOMFORT": 0,
+    "OXYGEN_SATURATION": 0.0,
+    "CHEST_TIGHTNESS": 0,
+    "FAMILY_HISTORY": 0,
+    "SMOKING_FAMILY_HISTORY": 0,
+    "STRESS_IMMUNE": 0,
+  };
+  String _predictionResult = "";
 
-  // Function to make the API request
-  Future<void> predict() async {
-    // API endpoint URL
-    const String apiUrl = 'https://linear-regression-model-ntlf.onrender.com'; // Replace with your API URL
-
-    // Prepare the input data
-    Map<String, dynamic> inputData = {
-      'AGE': int.parse(ageController.text),
-      'GENDER': int.parse(genderController.text),
-      'SMOKING': int.parse(smokingController.text),
-      'FINGER_DISCOLORATION': int.parse(fingerDiscolorationController.text),
-      'MENTAL_STRESS': int.parse(mentalStressController.text),
-      'EXPOSURE_TO_POLLUTION': int.parse(pollutionExposureController.text),
-      'LONG_TERM_ILLNESS': int.parse(longTermIllnessController.text),
-      'ENERGY_LEVEL': double.parse(energyLevelController.text),
-      'IMMUNE_WEAKNESS': int.parse(immuneWeaknessController.text),
-      'BREATHING_ISSUE': int.parse(breathingIssueController.text),
-      'ALCOHOL_CONSUMPTION': int.parse(alcoholConsumptionController.text),
-      'THROAT_DISCOMFORT': int.parse(throatDiscomfortController.text),
-      'OXYGEN_SATURATION': double.parse(oxygenSaturationController.text),
-      'CHEST_TIGHTNESS': int.parse(chestTightnessController.text),
-      'FAMILY_HISTORY': int.parse(familyHistoryController.text),
-      'SMOKING_FAMILY_HISTORY': int.parse(smokingFamilyHistoryController.text),
-      'STRESS_IMMUNE': int.parse(stressImmuneController.text),
-    };
-
-    // Make the POST request
+  Future<void> _predict() async {
+    final url = Uri.parse("https://linear-regression-model-ntlf.onrender.com/predict");
     try {
       final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(inputData),
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(_formData),
       );
 
       if (response.statusCode == 200) {
-        // Parse the response
-        Map<String, dynamic> result = json.decode(response.body);
-        int prediction = result['prediction'];
-
-        // Navigate to the result page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultPage(prediction: prediction),
-          ),
-        );
+        final responseData = jsonDecode(response.body);
+        setState(() {
+          _predictionResult = "Prediction: ${responseData['prediction']}";
+        });
       } else {
-        // Handle errors
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultPage(prediction: null, error: 'Error: ${response.statusCode}'),
-          ),
-        );
+        setState(() {
+          _predictionResult = "Error: ${response.reasonPhrase}";
+        });
       }
-    } catch (e) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ResultPage(prediction: null, error: 'Error: $e'),
-        ),
-      );
+    } catch (error) {
+      setState(() {
+        _predictionResult = "Failed to connect to API";
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Prediction App'),
-      ),
+      appBar: AppBar(title: Text('Health Prediction')),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Input fields for each variable
-            TextField(controller: ageController, decoration: InputDecoration(labelText: 'AGE')),
-            TextField(controller: genderController, decoration: InputDecoration(labelText: 'GENDER')),
-            TextField(controller: smokingController, decoration: InputDecoration(labelText: 'SMOKING')),
-            TextField(controller: fingerDiscolorationController, decoration: InputDecoration(labelText: 'FINGER_DISCOLORATION')),
-            TextField(controller: mentalStressController, decoration: InputDecoration(labelText: 'MENTAL_STRESS')),
-            TextField(controller: pollutionExposureController, decoration: InputDecoration(labelText: 'EXPOSURE_TO_POLLUTION')),
-            TextField(controller: longTermIllnessController, decoration: InputDecoration(labelText: 'LONG_TERM_ILLNESS')),
-            TextField(controller: energyLevelController, decoration: InputDecoration(labelText: 'ENERGY_LEVEL')),
-            TextField(controller: immuneWeaknessController, decoration: InputDecoration(labelText: 'IMMUNE_WEAKNESS')),
-            TextField(controller: breathingIssueController, decoration: InputDecoration(labelText: 'BREATHING_ISSUE')),
-            TextField(controller: alcoholConsumptionController, decoration: InputDecoration(labelText: 'ALCOHOL_CONSUMPTION')),
-            TextField(controller: throatDiscomfortController, decoration: InputDecoration(labelText: 'THROAT_DISCOMFORT')),
-            TextField(controller: oxygenSaturationController, decoration: InputDecoration(labelText: 'OXYGEN_SATURATION')),
-            TextField(controller: chestTightnessController, decoration: InputDecoration(labelText: 'CHEST_TIGHTNESS')),
-            TextField(controller: familyHistoryController, decoration: InputDecoration(labelText: 'FAMILY_HISTORY')),
-            TextField(controller: smokingFamilyHistoryController, decoration: InputDecoration(labelText: 'SMOKING_FAMILY_HISTORY')),
-            TextField(controller: stressImmuneController, decoration: InputDecoration(labelText: 'STRESS_IMMUNE')),
-
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: predict,
-              child: Text('Predict'),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                for (var key in _formData.keys)
+                  TextFormField(
+                    decoration: InputDecoration(labelText: key.replaceAll('_', ' ')),
+                    keyboardType: key == "ENERGY_LEVEL" || key == "OXYGEN_SATURATION"
+                        ? TextInputType.numberWithOptions(decimal: true)
+                        : TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        _formData[key] = key == "ENERGY_LEVEL" || key == "OXYGEN_SATURATION"
+                            ? double.tryParse(value) ?? 0.0
+                            : int.tryParse(value) ?? 0;
+                      });
+                    },
+                  ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _predict,
+                  child: Text('Predict'),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  _predictionResult,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class ResultPage extends StatelessWidget {
-  final int? prediction;
-  final String? error;
-
-  ResultPage({this.prediction, this.error});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Prediction Result'),
-      ),
-      body: Center(
-        child: prediction != null
-            ? Text('Prediction: $prediction')
-            : Text(error ?? 'An error occurred'),
       ),
     );
   }

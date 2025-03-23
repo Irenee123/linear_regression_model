@@ -117,30 +117,16 @@ The Flutter app provides a user-friendly interface for interacting with the API.
 ---
 
 ## 🛠️ Installation
-### Backend
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/lung-cancer-predictor.git
-   cd lung-cancer-predictor/backend
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the FastAPI server:
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-### Frontend
-1. Navigate to the Flutter app directory:
-   ```bash
-   cd ../frontend
+   git clone https://github.com/Irenee123/linear_regression_model.git
+   cd Summative/lung-cancer
    ```
 2. Install dependencies:
    ```bash
    flutter pub get
    ```
+
 3. Run the app:
    ```bash
    flutter run

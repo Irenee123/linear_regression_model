@@ -45,6 +45,16 @@ class PredictionInput(BaseModel):
     SMOKING_FAMILY_HISTORY: int
     STRESS_IMMUNE: int
 
+# Add CORS middleware
+origins = ["*"]  # Allows all origins (for development)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Define the prediction endpoint
 @app.post('/predict')
 def predict(input: PredictionInput):

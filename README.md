@@ -74,7 +74,7 @@ This project aims to provide an easy-to-use tool for individuals to assess their
 ## 🔗 API Endpoint
 The FastAPI backend provides a single endpoint for making predictions:
 
-- **URL**: `https://your-api-url.com/predict`
+- **URL**: `(https://linear-regression-model-ntlf.onrender.com)`
 - **Method**: `POST`
 - **Input**: JSON object with the following fields:
   ```json

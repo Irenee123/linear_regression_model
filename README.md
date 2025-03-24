@@ -144,7 +144,7 @@ The Flutter app provides a user-friendly interface for interacting with the API.
 
 ## 📹 Video Demo
 Watch the video demo of the Lung Cancer Predictor in action:  
-*(Insert your YouTube video link here.)*
+*([Video DEMO and Model explaination.)*](https://youtu.be/E1tLfum7yow)
 
 ---
 

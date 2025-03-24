@@ -13,17 +13,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Health Prediction',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: PredictionScreen(),
+      home: InputScreen(),
     );
   }
 }
 
-class PredictionScreen extends StatefulWidget {
+class InputScreen extends StatefulWidget {
   @override
-  _PredictionScreenState createState() => _PredictionScreenState();
+  _InputScreenState createState() => _InputScreenState();
 }
 
-class _PredictionScreenState extends State<PredictionScreen> {
+class _InputScreenState extends State<InputScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> _formData = {
     "AGE": 0,
@@ -44,7 +44,6 @@ class _PredictionScreenState extends State<PredictionScreen> {
     "SMOKING_FAMILY_HISTORY": 0,
     "STRESS_IMMUNE": 0,
   };
-  String _predictionResult = "";
 
   Future<void> _predict() async {
     final url = Uri.parse("https://linear-regression-model-ntlf.onrender.com/predict");
@@ -57,25 +56,34 @@ class _PredictionScreenState extends State<PredictionScreen> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        setState(() {
-          _predictionResult = "Prediction: ${responseData['prediction']}";
-        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(prediction: responseData['prediction'].toString()),
+          ),
+        );
       } else {
-        setState(() {
-          _predictionResult = "Error: ${response.reasonPhrase}";
-        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(prediction: "Error: ${response.reasonPhrase}"),
+          ),
+        );
       }
     } catch (error) {
-      setState(() {
-        _predictionResult = "Failed to connect to API";
-      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultScreen(prediction: "Failed to connect to API"),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Health Prediction')),
+      appBar: AppBar(title: Text('Lung Cancer Predictor')),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -102,13 +110,41 @@ class _PredictionScreenState extends State<PredictionScreen> {
                   onPressed: _predict,
                   child: Text('Predict'),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  _predictionResult,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ResultScreen extends StatelessWidget {
+  final String prediction;
+  
+  ResultScreen({required this.prediction});
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Prediction Result')),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                prediction,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Back'),
+              ),
+            ],
           ),
         ),
       ),

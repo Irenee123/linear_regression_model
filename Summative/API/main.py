@@ -77,7 +77,8 @@ def predict(input: PredictionInput):
         prediction = round(prediction[0])
         
         # Return the prediction
-        return {"prediction": prediction}
+        if prediction is not None:
+            return {"prediction": "Lung Cancer Detected (1)" if prediction == 1 else "No Lung Cancer (0)"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

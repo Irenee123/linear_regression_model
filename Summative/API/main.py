@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import numpy as np
@@ -45,10 +46,11 @@ class PredictionInput(BaseModel):
     SMOKING_FAMILY_HISTORY: int
     STRESS_IMMUNE: int
 
-# Add CORS middleware
+# Added CORS middleware
+origins = ["*"]  # Allows all origins (for development)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

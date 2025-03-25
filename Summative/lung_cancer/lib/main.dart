@@ -11,8 +11,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Health Prediction',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      title: 'Lung Cancer Predictor',
+      theme: ThemeData(
+        primaryColor: Color(0xFF0D47A1),
+        scaffoldBackgroundColor: Color(0xFFF5F5F5),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(0xFF1565C0),
+          centerTitle: true,
+          titleTextStyle: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
       home: InputScreen(),
     );
   }
@@ -83,7 +103,9 @@ class _InputScreenState extends State<InputScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lung Cancer Predictor')),
+      appBar: AppBar(
+        title: Text('Lung Cancer Risk Predictor', textAlign: TextAlign.center),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -92,23 +114,39 @@ class _InputScreenState extends State<InputScreen> {
             child: Column(
               children: [
                 for (var key in _formData.keys)
-                  TextFormField(
-                    decoration: InputDecoration(labelText: key.replaceAll('_', ' ')),
-                    keyboardType: key == "ENERGY_LEVEL" || key == "OXYGEN_SATURATION"
-                        ? TextInputType.numberWithOptions(decimal: true)
-                        : TextInputType.number,
-                    onChanged: (value) {
-                      setState(() {
-                        _formData[key] = key == "ENERGY_LEVEL" || key == "OXYGEN_SATURATION"
-                            ? double.tryParse(value) ?? 0.0
-                            : int.tryParse(value) ?? 0;
-                      });
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: key.replaceAll('_', ' '),
+                        prefixIcon: Icon(Icons.health_and_safety, color: Color(0xFF0D47A1)),
+                      ),
+                      keyboardType: key == "ENERGY_LEVEL" || key == "OXYGEN_SATURATION"
+                          ? TextInputType.numberWithOptions(decimal: true)
+                          : TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          _formData[key] = key == "ENERGY_LEVEL" || key == "OXYGEN_SATURATION"
+                              ? double.tryParse(value) ?? 0.0
+                              : int.tryParse(value) ?? 0;
+                        });
+                      },
+                    ),
                   ),
                 SizedBox(height: 20),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF0D47A1),
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: _predict,
-                  child: Text('Predict'),
+                  child: Text(
+                    'Predict',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -136,13 +174,23 @@ class ResultScreen extends StatelessWidget {
             children: [
               Text(
                 prediction,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF0D47A1),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onPressed: () => Navigator.pop(context),
-                child: Text('Back'),
+                child: Text(
+                  'Back',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
               ),
             ],
           ),
